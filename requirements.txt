@@ -1,0 +1,14 @@
+# Modules used for the Lab
+pandas
+scikit-learn
+seaborn
+matplotlib
+imbalanced-learn
+openml
+xgboost
+
+tabulate
+
+# Optional modules
+black
+isort
