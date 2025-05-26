@@ -1,4 +1,5 @@
 from eda import EDA, K_means, PCA_lab
+from text_classification import Text_Preprocessing
 
 if __name__ == '__main__':
     """
@@ -77,7 +78,7 @@ if __name__ == '__main__':
     ####################################################################################
     # Part 2 - Text classification using Bag of Words, TF-IDF, Word2Vec and BERT embeddings.
     ####################################################################################
-    from text_classification import Text_Preprocessing
+    # Preprocessing
     text_preprocessing = Text_Preprocessing()
 
     text_preprocessing.load_dataset()
@@ -85,3 +86,13 @@ if __name__ == '__main__':
     text_preprocessing.split_data()
 
     text_preprocessing.show_sample()
+
+    # Bag of Words
+    text_preprocessing.bag_of_words()
+    text_preprocessing.naive_bayes_model()
+
+    # TF-IDF
+    text_preprocessing.tf_idf()
+    text_preprocessing.naive_bayes_model()
+
+

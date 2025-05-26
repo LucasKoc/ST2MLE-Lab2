@@ -7,10 +7,10 @@ import pandas as pd
 import seaborn as sns
 from openml import OpenMLDataset
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
-from sklearn.decomposition import PCA
 from config import Config
 
 
@@ -365,7 +365,8 @@ class K_means:
             plt.show()
             plt.close()
 
-class PCA_lab():
+
+class PCA_lab:
     """
     Class for PCA and visualization.
     """
@@ -409,11 +410,7 @@ class PCA_lab():
 
         plt.figure(figsize=(8, 6))
         sns.scatterplot(
-            x=self.X_pca[:, 0],
-            y=self.X_pca[:, 1],
-            hue=cluster_labels,
-            palette="Set1",
-            alpha=0.7
+            x=self.X_pca[:, 0], y=self.X_pca[:, 1], hue=cluster_labels, palette="Set1", alpha=0.7
         )
         plt.xlabel("Principal Component 1")
         plt.ylabel("Principal Component 2")
@@ -432,7 +429,7 @@ class PCA_lab():
         loadings = pd.DataFrame(
             self.pca.components_.T,
             columns=[f"PC{i + 1}" for i in range(self.pca.n_components_)],
-            index=self.X.columns
+            index=self.X.columns,
         )
         print("\nFeature contributions (PCA loadings):")
         print(loadings)
