@@ -11,6 +11,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
+from sklearn.decomposition import PCA
 from config import Config
 
 
@@ -24,6 +25,9 @@ def create_assets_folder() -> None:
 
     if not os.path.exists(Config.DIR_EDA):
         os.makedirs(Config.DIR_EDA)
+
+    if not os.path.exists(Config.DIR_PCA):
+        os.makedirs(Config.DIR_PCA)
 
 
 class EDA:
@@ -361,3 +365,87 @@ class K_means:
             plt.savefig(Config.DIR_EDA + f"/kmeans_clusters_{feature_x}_{feature_y}.png")
             plt.show()
             plt.close()
+
+class PCA_lab():
+    """
+    Class for PCA and visualization.
+    """
+
+    def __init__(self, X: pd.DataFrame | None = None):
+        """
+        Initialize the PCA class.
+        :param X: Training features
+        """
+        self.X = X
+        self.pca = None
+        self.X_pca = None
+
+    def apply_pca(self, n_components: int = 2) -> None:
+        """
+        Apply PCA to the dataset.
+        :param n_components: Number of principal components to keep
+        """
+        self.pca = PCA(n_components=n_components)
+        self.X_pca = self.pca.fit_transform(self.X)
+
+    def explained_variance_ratio(self) -> None:
+        """
+        Print the explained variance ratio of each principal component.
+        """
+        if self.pca is None:
+            raise ValueError("PCA has not been applied yet. Please run apply_pca() first.")
+
+        print("----------------------------------")
+        print("Explained variance ratio of each principal component:")
+        for i, var in enumerate(self.pca.explained_variance_ratio_):
+            print(f"PC{i + 1}: {var:.4f}")
+        print("----------------------------------")
+
+    def plot_pca_clusters(self, cluster_labels, save_path=None):
+        """
+        Plot the 2D PCA-transformed data colored by KMeans cluster labels.
+        """
+        if self.X_pca is None:
+            raise ValueError("PCA has not been applied yet.")
+
+        plt.figure(figsize=(8, 6))
+        sns.scatterplot(
+            x=self.X_pca[:, 0],
+            y=self.X_pca[:, 1],
+            hue=cluster_labels,
+            palette="Set1",
+            alpha=0.7
+        )
+        plt.xlabel("Principal Component 1")
+        plt.ylabel("Principal Component 2")
+        plt.title("KMeans Clusters in PCA Space")
+        plt.legend(title="Cluster")
+        plt.tight_layout()
+        plt.savefig(save_path or Config.DIR_PCA + "/pca_clusters.png")
+
+    def pca_feature_contributions(self):
+        """
+        Show PCA loadings: feature contributions to PC1 and PC2.
+        """
+        if self.pca is None:
+            raise ValueError("PCA has not been applied yet.")
+
+        loadings = pd.DataFrame(
+            self.pca.components_.T,
+            columns=[f"PC{i + 1}" for i in range(self.pca.n_components_)],
+            index=self.X.columns
+        )
+        print("\nFeature contributions (PCA loadings):")
+        print(loadings)
+
+        # Optionally: return sorted by magnitude for easier interpretation
+        sorted_pc1 = loadings["PC1"].abs().sort_values(ascending=False)
+        sorted_pc2 = loadings["PC2"].abs().sort_values(ascending=False)
+
+        print("--------------------------------")
+        print("\nTop features contributing to PC1:")
+        print(sorted_pc1.head())
+
+        print("\nTop features contributing to PC2:")
+        print(sorted_pc2.head())
+        print("--------------------------------")
