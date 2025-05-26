@@ -325,6 +325,33 @@ class K_means:
                 palette="Set1",
                 alpha=0.7,
             )
+
+            # Plot Centroids
+            centers = self.kmeans.cluster_centers_
+            feature_idx_a = self.X.columns.get_loc(feature_x)
+            feature_idx_b = self.X.columns.get_loc(feature_y)
+
+            plt.scatter(
+                centers[:, feature_idx_a],
+                centers[:, feature_idx_b],
+                c='black',
+                s=100,
+                marker='+',
+                linewidths=2,
+                label='Centroids',
+            )
+
+            # Add labels to centroids
+            for idx, (x, y) in enumerate(zip(centers[:, feature_idx_a], centers[:, feature_idx_b])):
+                plt.text(
+                    x,
+                    y,
+                    f"C{idx}",
+                    fontsize=12,
+                    fontweight='bold',
+                    color='black',
+                )
+
             plt.title(f"KMeans Clusters on {feature_x} vs {feature_y}")
             plt.xlabel(feature_x)
             plt.ylabel(feature_y)
