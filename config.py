@@ -9,3 +9,4 @@ class Config:
     DIR_EDA: str = DIR_ASSETS + "/eda"
 
     RANDOM_STATE: int = 42
+    TEST_SIZE: float = 0.2
