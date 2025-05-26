@@ -7,7 +7,6 @@ import pandas as pd
 import seaborn as sns
 from openml import OpenMLDataset
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
@@ -401,7 +400,7 @@ class PCA_lab():
             print(f"PC{i + 1}: {var:.4f}")
         print("----------------------------------")
 
-    def plot_pca_clusters(self, cluster_labels, save_path=None):
+    def plot_pca_clusters(self, cluster_labels, file_name_suffix: str = "") -> None:
         """
         Plot the 2D PCA-transformed data colored by KMeans cluster labels.
         """
@@ -421,7 +420,7 @@ class PCA_lab():
         plt.title("KMeans Clusters in PCA Space")
         plt.legend(title="Cluster")
         plt.tight_layout()
-        plt.savefig(save_path or Config.DIR_PCA + "/pca_clusters.png")
+        plt.savefig(Config.DIR_PCA + f"/pca_clusters{file_name_suffix}.png")
 
     def pca_feature_contributions(self):
         """

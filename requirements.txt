@@ -6,9 +6,11 @@ matplotlib
 imbalanced-learn
 openml
 xgboost
+spacy # run in bash: python -m spacy download en_core_web_sm
 
 tabulate
 
 # Optional modules
 black
 isort
+tqdm
