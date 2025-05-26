@@ -28,7 +28,7 @@ if __name__ == '__main__':
     ####################################################################################
     # Part 2 - K-Means Clustering
     ####################################################################################
-    k_means = K_means()
+    k_means = K_means(X=eda.X_train)
 
     # Exercise 1 - Apply K-Means clustering (with k=2) to the standardized data
     k_means.k_means_clustering(k=2)

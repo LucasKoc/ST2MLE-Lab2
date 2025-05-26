@@ -1,4 +1,5 @@
 import os
+from itertools import combinations
 
 import matplotlib.pyplot as plt
 import openml
@@ -231,31 +232,32 @@ class EDA:
             )
 
         scaler = StandardScaler()
-        self.X_train = scaler.fit_transform(self.X_train)
-        self.X_test = scaler.transform(self.X_test)
+
+        columns = self.X_train.columns
+        train_idx = self.X_train.index
+        test_idx = self.X_test.index
+
+        self.X_train = pd.DataFrame(
+            scaler.fit_transform(self.X_train), columns=columns, index=train_idx
+        )
+        self.X_test = pd.DataFrame(scaler.transform(self.X_test), columns=columns, index=test_idx)
         del self.X, self.y
 
 
-class K_means(EDA):
+class K_means:
     """
     Class for K-means clustering.
     """
 
     def __init__(
         self,
-        X_train: pd.DataFrame | None = None,
-        X_test: pd.DataFrame | None = None,
-        y_train: pd.Series | None = None,
-        y_test: pd.Series | None = None,
+        X: pd.DataFrame | None = None,
     ):
         """
         Initialize the K-means class.
-        :param X_train: Training features
-        :param X_test: Testing features
-        :param y_train: Training target variable
-        :param y_test: Testing target variable
+        :param X: Training features
         """
-        super().__init__(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test)
+        self.X = X
         self.kmeans = None
         self.cluster_labels = None
 
@@ -277,6 +279,21 @@ class K_means(EDA):
         :param feature_a: Feature for the x-axis (e.g., 'Glucose')
         :param feature_b: Feature for the y-axis (e.g., 'BMI')
         """
+        if self.kmeans is None or self.cluster_labels is None:
+            raise ValueError(
+                "KMeans clustering has not been applied yet. Please run k_means_clustering() first."
+            )
+
+        if feature_a not in self.X.columns or feature_b not in self.X.columns:
+            raise ValueError(
+                f"Features '{feature_a}' and '{feature_b}' must be in the dataset columns."
+            )
+
+        if self.X[feature_a].isnull().any() or self.X[feature_b].isnull().any():
+            raise ValueError(
+                f"Features '{feature_a}' and '{feature_b}' must not contain null values."
+            )
+
         plt.figure(figsize=(10, 6))
         sns.scatterplot(
             x=self.X[feature_a],
@@ -295,8 +312,6 @@ class K_means(EDA):
         plt.close()
 
     def all_feature_plot(self):
-        from itertools import combinations
-
         features = self.X.columns
         if "Cluster" in features:
             features = features.drop("Cluster")
